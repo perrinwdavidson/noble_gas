@@ -6,6 +6,9 @@ __pycache__/
 # Mac extensions
 .DS_Store
 
+# Autosave files
+.asv
+
 # C extensions
 *.so
 
