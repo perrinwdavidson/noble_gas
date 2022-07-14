@@ -1,4 +1,4 @@
-function monthly_stats = calc_monthly_stats(monthly_data, uvic_grid_path)
+function monthly_stats = calc_monthly_stats(monthly_data, uvic_grid_path, variable)
 %--------------------------------------------------------------------------
 %   purpose: calculate monthly statistics of cmip5 data seasonal array.
 %   author: perrin w. davidson
@@ -6,7 +6,7 @@ function monthly_stats = calc_monthly_stats(monthly_data, uvic_grid_path)
 %   date: 06.07.22
 %--------------------------------------------------------------------------
 %%  let me know what is going on
-disp('Calculating seasonal statistics.'); 
+disp(['Calculating monthly statistics for ' variable]); 
 
 %%  load data
 load(uvic_grid_path, 'nx', 'ny');

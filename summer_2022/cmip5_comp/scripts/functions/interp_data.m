@@ -6,7 +6,7 @@ function cmip_data_uvic = interp_data(cmip_data, uvic_grid_path, variable, produ
 %   date: 06.07.22
 %--------------------------------------------------------------------------
 %%  let me know what is going on
-disp('Interpolating to UVic grid from: '); 
+disp(['Interpolating ' variable ' to UVic grid from: ']); 
 
 %%  load data
 load(uvic_grid_path, 'x', 'y', 'nx', 'ny');
@@ -77,9 +77,13 @@ for iMod = 1 : 1 : NUMMOD
         %  reshape ::
         shaped_interp = reshape(data_interp, [nx, ny]);
 
-        %   exclude out of range values ::
-        shaped_interp(shaped_interp < 0) = 0;
-        shaped_interp(shaped_interp > 1) = 1;
+        %   exclude out of range values for sic ::
+        if strcmp('sic', variable)
+
+            shaped_interp(shaped_interp < 0) = 0;
+            shaped_interp(shaped_interp > 1) = 1;
+
+        end
 
         %   store ::
         cmip_data_uvic_mod{1, iMod}(:, :, iMon) = shaped_interp;
