@@ -41,10 +41,13 @@ seasons.south = [6, 7, 8; ...
 uvic_grid_path = [input_path 'uvic/grid.mat'];
 
 %%  compare sea ice fraction
-compare_sic; 
+compile_sic; 
 
 %%  compare windspeed 
-compare_u10; 
-compare_v10;
+compile_u10; 
+compile_v10;
+
+%%  calculate wind factor
+calculate_delta; 
 
 %%  end program
