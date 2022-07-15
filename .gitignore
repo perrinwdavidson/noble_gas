@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Specific folders and files
+summer_2022/cmip5_comp/io/**
+
 # Mac extensions
 .DS_Store
 
