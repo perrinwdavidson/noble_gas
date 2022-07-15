@@ -24,9 +24,12 @@ NUMMON = size(data{1}, 2);
 NUMDATA = size(data, 2);
 
 %	preallocate space ::
-factor_lgm_pic = cell(size(data{1})); 
+factor_lgm_pic_cmip5 = cell([1, 2]); % 1 (u10), 2 (v10)
 
 %	loop over all data, months, and models to calculate factor ::
+%-  count data ::
+count_data = 1; 
+
 %- 	over all data ::
 for iData = 1 : 2 : NUMDATA
 
@@ -35,7 +38,7 @@ for iData = 1 : 2 : NUMDATA
 	pic_data = data{iData + 1};
 
 	%-	over all months ::
-	for iMon = 1 : 1 : NUMMON
+    for iMon = 1 : 1 : NUMMON
 	
 		%- over all models ::
 		for iMod = 1 : 1 : NUMMOD
@@ -45,15 +48,18 @@ for iData = 1 : 2 : NUMDATA
 			mod_lgm	= pic_data{1, iMon}(:, :, iMod); 
 
 			%	calculate factor ::
-			factor_lgm_pic{1, iMon}(:, :, iMod) = mod_lgm ./ mod_pic;
+			factor_lgm_pic_cmip5{count_data}{1, iMon}(:, :, iMod) = mod_lgm ./ mod_pic;
 	
 		end
 	
-	end
+    end
+
+    %-  interate data counter ::
+    count_data = count_data + 1; 
 
 end
 
 %%	save data
-save(fullfile(output_path, 'wind_factor', 'factor_lgm_pic.mat'), 'factor_lgm_pic');
+save(fullfile(output_path, 'wind_factor', 'factor_lgm_pic_cmip5.mat'), 'factor_lgm_pic_cmip5');
 
 %%	end program
