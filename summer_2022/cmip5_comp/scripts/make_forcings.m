@@ -7,7 +7,7 @@
 %%-------------------------------------------------------------------------
 %%  load data
 %   grid data ::
-load(fullfile(input_path, 'uvic', 'grid.mat'), 'x', 'y', 'nx', 'ny');  % x and y correspond to (x, y) or (lon, lat)
+load(fullfile(input_path, 'uvic', 'grid.mat'), 'x', 'y', 'nx', 'ny', 'ideep');  % x and y correspond to (x, y) or (lon, lat)
 t = [-45 -15 15 46 74 105 135 166 196 227 258 288 319 349 380 410]';  % from exports3D (siegel et al. 2014). center of each month by day from November to February
 
 %   core2 ::
@@ -17,6 +17,10 @@ core_y = ncread(fullfile(input_path, 'core2', 'u_10.15JUNE2009.nc'), 'LAT');
 core_ny = length(core_y);
 core_t = ncread(fullfile(input_path, 'core2', 'u_10.15JUNE2009.nc'), 'TIME'); 
 core_nt = length(core_t);
+
+%   make sea mask ::
+sea_mask = ideep; 
+sea_mask(sea_mask ~= 0) = 1; 
 
 %%  collect by models and interpolate 
 %   set dimensions ::
@@ -37,8 +41,17 @@ for iMon = 1 : 1 : NUMMON
     for iMod = 1 : 1 : NUMMOD
 
         %   sic ::
-        pic_sic{1, iMod}(:, :, iMon) = cmip5_sic_pic_uvic_monthly{1, iMon}(:, :, iMod);
-        lgm_sic{1, iMod}(:, :, iMon) = cmip5_sic_lgm_uvic_monthly{1, iMon}(:, :, iMod);
+        %-  get data ::
+        pic_sic_data = cmip5_sic_pic_uvic_monthly{1, iMon}(:, :, iMod);
+        lgm_sic_data = cmip5_sic_lgm_uvic_monthly{1, iMon}(:, :, iMod);
+
+        %-  sea mask data ::
+        pic_sic_data(~sea_mask) = 0; 
+        lgm_sic_data(~sea_mask) = 0; 
+
+        %- store data ::
+        pic_sic{1, iMod}(:, :, iMon) = pic_sic_data;
+        lgm_sic{1, iMod}(:, :, iMon) = lgm_sic_data;
 
         %   u10 ::
         pic_u10{1, iMod}(:, :, iMon) = cmip5_u10_pic_uvic_monthly{1, iMon}(:, :, iMod);
@@ -47,6 +60,8 @@ for iMon = 1 : 1 : NUMMON
         %   v10 ::
         pic_v10{1, iMod}(:, :, iMon) = cmip5_v10_pic_uvic_monthly{1, iMon}(:, :, iMod);
         lgm_v10{1, iMod}(:, :, iMon) = cmip5_v10_lgm_uvic_monthly{1, iMon}(:, :, iMod);
+
+
 
     end
 

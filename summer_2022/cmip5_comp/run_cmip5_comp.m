@@ -47,10 +47,10 @@ compile_sic;
 compile_u10; 
 compile_v10;
 
-%%  calculate wind factor
-calculate_delta; 
-
 %%  finalize forcings
 make_forcings; 
+
+%%  calculate wind factor
+calculate_delta; 
 
 %%  end program
