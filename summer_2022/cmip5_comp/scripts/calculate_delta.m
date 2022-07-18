@@ -17,6 +17,9 @@ data{2} = u10_cmip5{2};
 data{3} = v10_cmip5{1}; 
 data{4} = v10_cmip5{2}; 
 
+%   set median filter size ::
+filtsize = [21 21];
+
 %%	calculate multiplicative factor
 %	get number of models and months ::
 NUMDATA = size(data{1}{1, 1}, 3); 
@@ -48,7 +51,10 @@ for iAge = 1 : 2 : NUMAGE
 			mod_lgm	= pic_data{1, iMod}(:, :, iData); 
 
 			%	calculate factor ::
-			factor_lgm_pic_cmip5{count_data}{1, iMod}(:, :, iData) = mod_lgm ./ mod_pic;
+			factor_data = mod_lgm ./ mod_pic;
+
+            %   filter data ::
+            factor_lgm_pic_cmip5{count_data}{1, iMod}(:, :, iData) = medfilt2(factor_data, filtsize);
 	
 		end
 	
