@@ -53,6 +53,16 @@ for iAge = 1 : 2 : NUMAGE
 			%	calculate factor ::
 			factor_data = mod_lgm ./ mod_pic;
 
+            %   find outlier ::
+            %-  [1] plot pre-transformation histogram
+            %-  [2] calculate min + 1eN, for n the sig fig
+            %-  [3] add min to data
+            %-  [4] perform box-cox transformation
+            %-  [5] plot post-transformation histogram
+            %-  [6] apply gesd in isoutlier
+            %-  [7] use ind2sub to find indices and make nans
+            %-  [8] apply movmean in fillmissing at set window length
+
             %   filter data ::
             factor_lgm_pic_cmip5{count_data}{1, iMod}(:, :, iData) = medfilt2(factor_data, filtsize);
 	

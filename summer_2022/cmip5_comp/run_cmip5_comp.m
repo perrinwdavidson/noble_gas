@@ -37,9 +37,6 @@ seasons.south = [6, 7, 8; ...
                  12, 1, 2; ...
                  3, 4, 5];
 
-%   set uvic grid paths ::
-uvic_grid_path = [input_path 'uvic/grid.mat'];
-
 %%  compare sea ice fraction
 compile_sic; 
 

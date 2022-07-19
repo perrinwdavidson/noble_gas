@@ -22,20 +22,11 @@ cmip5_sic_lgm_rawData_monthly = read_data(variable, products, lgm_paths);
 cmip5_sic_pic_rawData_monthly = read_data(variable, products, pic_paths);
 
 %%  interpolate data
-cmip5_sic_lgm_uvic_monthly = interp_data(cmip5_sic_lgm_rawData_monthly, uvic_grid_path, variable, products); 
-cmip5_sic_pic_uvic_monthly = interp_data(cmip5_sic_pic_rawData_monthly, uvic_grid_path, variable, products); 
-
-%%  calculate statistics
-cmip5_sic_lgm_uvic_monthly_stats = calc_monthly_stats(cmip5_sic_lgm_uvic_monthly, uvic_grid_path); 
-cmip5_sic_pic_uvic_monthly_stats = calc_monthly_stats(cmip5_sic_pic_uvic_monthly, uvic_grid_path); 
+cmip5_sic_lgm_uvic_monthly = interp_data(cmip5_sic_lgm_rawData_monthly, variable, products, 'lgm'); 
+cmip5_sic_pic_uvic_monthly = interp_data(cmip5_sic_pic_rawData_monthly, variable, products, 'pic'); 
 
 %%  save
-%   monthly arrays ::
-save([output_path 'cmip5/cmip5_sic_lgm_uvic_monthly_stats.mat'], 'cmip5_sic_lgm_uvic_monthly_stats');
-save([output_path 'cmip5/cmip5_sic_pic_uvic_monthly_stats.mat'], 'cmip5_sic_pic_uvic_monthly_stats');
-
-%   statistics ::
-save([output_path 'cmip5/cmip5_sic_lgm_uvic_monthly.mat'], 'cmip5_sic_lgm_uvic_monthly');
-save([output_path 'cmip5/cmip5_sic_pic_uvic_monthly.mat'], 'cmip5_sic_pic_uvic_monthly');
+save(fullfile(output_path, 'cmip5', 'lgm', 'cmip5_sic_lgm_uvic_monthly.mat'), 'cmip5_sic_lgm_uvic_monthly');
+save(fullfile(output_path, 'cmip5', 'pic', 'cmip5_sic_pic_uvic_monthly.mat'), 'cmip5_sic_pic_uvic_monthly');
 
 %%  end program

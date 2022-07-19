@@ -18,6 +18,13 @@ core_ny = length(core_y);
 core_t = ncread(fullfile(input_path, 'core2', 'u_10.15JUNE2009.nc'), 'TIME'); 
 core_nt = length(core_t);
 
+%   uvic default ::
+load(fullfile(input_path, 'uvic', 'pic', 'wind_speed.mat'), 'windspeed');
+uvic_wind.pic = windspeed; 
+load(fullfile(input_path, 'uvic', 'lgm', 'wind_speed.mat'), 'windspeed');
+uvic_wind.lgm = windspeed; 
+clear('windspeed')
+
 %   make sea mask ::
 sea_mask = ideep; 
 sea_mask(sea_mask ~= 0) = 1; 
@@ -35,7 +42,7 @@ lgm_u10 = cell([1, NUMMOD]);
 pic_v10 = cell([1, NUMMOD]);
 lgm_v10 = cell([1, NUMMOD]);
 
-%   collect data in array ::
+%   collect data in array ::  % do step-wise interpolate (monthly factor)
 for iMon = 1 : 1 : NUMMON
 
     for iMod = 1 : 1 : NUMMOD
@@ -61,8 +68,6 @@ for iMon = 1 : 1 : NUMMON
         pic_v10{1, iMod}(:, :, iMon) = cmip5_v10_pic_uvic_monthly{1, iMon}(:, :, iMod);
         lgm_v10{1, iMod}(:, :, iMon) = cmip5_v10_lgm_uvic_monthly{1, iMon}(:, :, iMod);
 
-
-
     end
 
 end
@@ -85,6 +90,10 @@ for iMod = 1 : 1 : NUMMOD
 
 end
 
+%   interpolate uvic ::
+wind_uvic{1} = concat_interp(lat, lon, time, uvic_wind.pic, core_lat, core_lon, core_time);
+wind_uvic{2} = concat_interp(lat, lon, time, uvic_wind.lgm, core_lat, core_lon, core_time);
+
 %%  make final arrays
 %   sic ::
 sea_ice_cmip5{1} = pic_sic; 
@@ -100,6 +109,7 @@ v10_cmip5{2} = lgm_v10;
 
 %%	save data
 save(fullfile(output_path, 'cmip5', 'sea_ice_cmip5.mat'), 'sea_ice_cmip5');
+save(fullfile(output_path, 'uvic', 'wind_uvic.mat'), 'wind_uvic');
 save(fullfile(output_path, 'cmip5', 'u10_cmip5.mat'), 'u10_cmip5', '-v7.3');
 save(fullfile(output_path, 'cmip5', 'v10_cmip5.mat'), 'v10_cmip5', '-v7.3');
 
