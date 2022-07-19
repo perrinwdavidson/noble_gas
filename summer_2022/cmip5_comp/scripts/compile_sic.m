@@ -19,7 +19,7 @@ variable = 'sic';
 
 %%  read data
 cmip5_sic_lgm_rawData_monthly = read_data(variable, products, lgm_paths);
-cmip5_sic_pic_rawData_monthly = read_data(variable, products, pic_paths);
+cmip5_sic_pic_rawData_monthly = read_data(variable, products, pic_paths); 
 
 %%  interpolate data
 cmip5_sic_lgm_uvic_monthly = interp_data(cmip5_sic_lgm_rawData_monthly, variable, products, 'lgm'); 

@@ -69,8 +69,8 @@ for iMod = 1 : 1 : NUMMOD
 
     %   average data ::
     disp('Calculating monthly mean climatology.')
-    model_data_mm = NaN(NUMX, NUMY, NUMMON);
-    for iMonth = 1 : 1 : 12
+    model_data_mm = NaN(size(model_data, 1), size(model_data, 2), NUMMON);
+    for iMonth = 1 : 1 : NUMMON
 
         %   calculate mean ::
         model_data_mm(:, :, iMonth) = mean(model_data(:, :, iMonth : 12 : end), 3, 'omitnan');
