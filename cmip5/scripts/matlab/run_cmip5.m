@@ -13,6 +13,9 @@ clear;
 close;
 clc;
 
+%   add all subdirectories to path ::
+addpath(genpath(pwd));
+
 %   set input and output paths ::
 exp_raw_path = fullfile(pwd, "data", "exp_raw"); 
 exp_pro_path = fullfile(pwd, "data", "exp_pro");

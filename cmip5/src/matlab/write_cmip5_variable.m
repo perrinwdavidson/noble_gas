@@ -20,7 +20,8 @@ end
 nc_id = netcdf.create(filename, 'NETCDF4');  
 
 %   make paths ::
-group_paths = cell(NUMMOD, 1);
+group_names = cell(NUMMOD, 1);
+variable_names = cell(NUMMOD, 1);
 
 %   loop through all models ::
 for iMod = 1 : 1 : NUMMOD
@@ -73,15 +74,25 @@ for iMod = 1 : 1 : NUMMOD
     disp(['Done writing data for ', group_name])
 
     %   store paths ::
-    group_paths{iMod} = fullfile('/', group_name, variable_name);
+    group_names{iMod} = ['/' group_name '/'];
+    variable_names{iMod} = variable_name;
 
 end
 
 %   save group paths ::
-num_group_paths_id = netcdf.defDim(nc_id, "num_var", size(group_paths, 1));
-group_paths_id = netcdf.defVar(nc_id, "variable_names", "NC_STRING", num_group_paths_id);
+%-  define dimensions
+num_names_id = netcdf.defDim(nc_id, "num_mod", NUMMOD);
+
+%-  define variables ::
+group_names_id = netcdf.defVar(nc_id, "group_names", "NC_STRING", num_names_id);
+variable_names_id = netcdf.defVar(nc_id, "variable_names", "NC_STRING", num_names_id);
+
+%-  end definition ::
 netcdf.endDef(nc_id);
-netcdf.putVar(nc_id, group_paths_id, group_paths)
+
+%-  place the variables ::
+netcdf.putVar(nc_id, group_names_id, group_names)
+netcdf.putVar(nc_id, variable_names_id, variable_names)
 
 %   close file ::
 netcdf.close(nc_id);
