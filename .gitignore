@@ -4,7 +4,35 @@ __pycache__/
 *$py.class
 
 # Specific folders and files
-summer_2022/cmip5_comp/io/**
+cmip5/plots/**
+cmip5/_research/**
+cmip5/data/**
+cmip5/notebooks/**
+
+# Latex
+*.aux
+*.glo
+*.idx
+*.log
+*.toc
+*.ist
+*.acn
+*.acr
+*.alg
+*.bbl
+*.blg
+*.dvi
+*.glg
+*.gls
+*.ilg
+*.ind
+*.lof
+*.lot
+*.maf
+*.mtc
+*.mtc1
+*.out
+*.synctex.gz
 
 # Mac extensions
 .DS_Store
