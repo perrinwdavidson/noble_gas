@@ -1,12 +1,13 @@
-%%  compare_u10 -- compiling and calculating stats for cmip5 u10
+%%=========================================================================
+%   compile_u10
 %%-------------------------------------------------------------------------
-%   purpose: to calculate cmip5 geographic distributions of zonal windspeed
+%   purpose: to compile cmip5 meridional wind speed (u10).
 %   author: perrin w. davidson
 %   contact: perrinwdavidson@gmail.com
 %   date: 01.07.22
-%%-------------------------------------------------------------------------
+%%=========================================================================
 %%  configure
-%   first set the important paths that we will use ::
+%   set the important paths that we will use ::
 cmip5_path = '/Volumes/data/CMIP5/output1/';
 
 %   set variable paths ::
@@ -18,27 +19,12 @@ pic_paths = {cmip5_path, pic_variable_path};
 %   choose variables ::
 variable = 'ua';
 
-%%  read data 
-%%% lgm ::
-cmip5_u10_lgm_rawData_monthly = read_data(variable, products, lgm_paths);
-cmip5_u10_pic_rawData_monthly = read_data(variable, products, pic_paths);
+%%  read data
+cmip5_u10_lgm_raw_data_monthly = read_cmip5_variable(variable, products, lgm_paths);
+cmip5_u10_pic_raw_data_monthly = read_cmip5_variable(variable, products, pic_paths); 
 
-%%  interpolate data
-%%% lgm ::
-cmip5_u10_lgm_uvic_monthly = interp_data(cmip5_u10_lgm_rawData_monthly, uvic_grid_path, variable, products);
-cmip5_u10_pic_uvic_monthly = interp_data(cmip5_u10_pic_rawData_monthly, uvic_grid_path, variable, products);
-
-%%  calculate statistics
-cmip5_u10_lgm_uvic_monthly_stats = calc_monthly_stats(cmip5_u10_lgm_uvic_monthly, uvic_grid_path, variable);
-cmip5_u10_pic_uvic_monthly_stats = calc_monthly_stats(cmip5_u10_pic_uvic_monthly, uvic_grid_path, variable);
-
-%%  save
-%   monthly arrays ::
-save([output_path 'cmip5/cmip5_u10_lgm_uvic_monthly_stats.mat'], 'cmip5_u10_lgm_uvic_monthly_stats');
-save([output_path 'cmip5/cmip5_u10_pic_uvic_monthly_stats.mat'], 'cmip5_u10_pic_uvic_monthly_stats');
-
-%   statistics ::
-save([output_path 'cmip5/cmip5_u10_lgm_uvic_monthly.mat'], 'cmip5_u10_lgm_uvic_monthly');
-save([output_path 'cmip5/cmip5_u10_pic_uvic_monthly.mat'], 'cmip5_u10_pic_uvic_monthly');
+%%  make netcdf
+write_cmip5_variable(cmip5_u10_lgm_raw_data_monthly, variable, products, 'LGM', fullfile(exp_raw_path, "cmip5", "lgm", "cmip5_u10_lgm_raw_data_monthly.nc"))
+write_cmip5_variable(cmip5_u10_pic_raw_data_monthly, variable, products, 'PIC', fullfile(exp_raw_path, "cmip5", "pic", "cmip5_u10_pic_raw_data_monthly.nc"))
 
 %%  end program

@@ -1,4 +1,4 @@
-function cmip_model_data = read_data(variable, products, paths)
+function cmip_model_data = read_cmip5_variable(variable, products, paths)
 %--------------------------------------------------------------------------
 %   purpose: compiling multiple cmip data into a cell
 %   author: perrin w. davidson
@@ -6,7 +6,7 @@ function cmip_model_data = read_data(variable, products, paths)
 %   date: 06.07.22
 %--------------------------------------------------------------------------
 %%  let me know what is going o
-disp(['Aggregating raw ' variable ' model data from:']); 
+disp(['Aggregating raw ' upper(variable) ' model data from:']); 
 
 %%  retrieve important stats
 %   get number of models to read ::
