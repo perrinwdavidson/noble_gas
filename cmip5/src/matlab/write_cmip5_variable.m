@@ -6,7 +6,7 @@ function write_cmip5_variable(cmip_data, variable, products, age, filename)
 %   date: 06.07.22
 %--------------------------------------------------------------------------
 %%  let me know what is going o
-disp(['Writing raw model data for ' upper(variable) ' to a netCDF file.']);
+disp(['Writing raw CMIP5 model data for ' upper(variable) ' to a netCDF file.']);
 
 %   get all models ::
 NUMMOD = length(cmip_data); 

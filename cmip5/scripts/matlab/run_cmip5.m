@@ -38,11 +38,18 @@ seasons.south = [6, 7, 8; ...
                  12, 1, 2; ...
                  3, 4, 5];
 
-%%  compare sea ice fraction
+%%  compile data
+%   sea ice fraction ::
 compile_sic; 
 
-%%  compare windspeed 
+%   windspeed ::
 compile_u10; 
 compile_v10;
+
+%%  interpolate data
+interp_variables;
+
+%%  plot data
+plot_variables;
 
 %%  end program
