@@ -30,17 +30,6 @@ products = {'NCAR', 'CCSM4'; ...
             'CNRM-CERFACS', 'CNRM-CM5'; ...
             'MIROC', 'MIROC-ESM'};
 
-%   set the seasonal averaging ::
-seasons.names = {'Winter', 'Spring', 'Summer', 'Autumn'};  % meteorological seasons
-seasons.north = [12, 1, 2; ...
-                 3, 4, 5; ...
-                 6, 7, 8; ...
-                 9, 10, 11]; 
-seasons.south = [6, 7, 8; ...
-                 9, 10, 11; ...
-                 12, 1, 2; ...
-                 3, 4, 5];
-
 %%  compile data
 %   sea ice fraction ::
 compile_sic; 
@@ -50,7 +39,11 @@ compile_u10;
 compile_v10;
 
 %%  interpolate data
+%-  interpolate all data to appropriate grids ::
 interp_variables;
+
+%-  calculate zonal mean for wind ::
+calc_zonal_mean; 
 
 %%  plot data
 plot_variables;

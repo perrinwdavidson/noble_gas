@@ -1,18 +1,35 @@
-function cmip_data_uvic = interp_cmip5_variable(cmip_data, variable, products, age)
+function [lon, lat, cmip_data_interp, variable_old, age] = interp_cmip5_variable(filename)
 %--------------------------------------------------------------------------
 %   purpose: interpolating cmip5 data to uvic or core-2 grids
 %   author: perrin w. davidson
 %   contact: perrinwdavidson@gmail.com
 %   date: 06.07.22
 %--------------------------------------------------------------------------
-%%  let me know what is going on
+%%  configure
+%   get variable name ::
+variable = filename(7 : 9);
+variable_old = variable; 
+if strcmp(variable, "u10")  % rename to cmip5
+
+    variable = "ua"; 
+
+elseif strcmp(variable, "v10")  % rename to cmip5
+
+    variable = "va";
+
+end
+
+%   get age ::
+age = filename(11 : 13);
+
+%   let me know what is going on ::
 if strcmp(variable, 'sic')
 
-    disp(['Interpolating ' variable ' to UVic grid.']); 
+    disp(append('Interpolating ', upper(variable), ' to UVic grid.')); 
     
 elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
 
-    disp(['Interpolating ' variable 'to CORE-2 grid.']); 
+    disp(append('Interpolating ', upper(variable), ' to CORE-2 grid.')); 
 
 end
 
@@ -20,7 +37,7 @@ end
 %   uvic data ::
 if strcmp(variable, 'sic')
         
-    load(fullfile('io', 'inputs', 'uvic', 'grid'), 'x', 'y', 'nx', 'ny', 'ideep');
+    load(fullfile('data', 'exp_raw', 'uvic', 'grid'), 'x', 'y', 'nx', 'ny', 'ideep');
     ideep(ideep ~= 0) = 1; 
     ind_lm = find(ideep(:) == 1);
     land_mask = logical(ideep(:));
@@ -28,19 +45,26 @@ if strcmp(variable, 'sic')
 
 elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
 
-    x = ncread(fullfile('io', 'inputs', 'core2', 'u_10.15JUNE2009.nc'), 'LON');
-    y = ncread(fullfile('io', 'inputs', 'core2', 'u_10.15JUNE2009.nc'), 'LAT');
+    x = ncread(fullfile('data', 'exp_raw', 'core2', 'u_10.15JUNE2009.nc'), 'LON');
+    y = ncread(fullfile('data', 'exp_raw', 'core2', 'u_10.15JUNE2009.nc'), 'LAT');
     nx = length(x); 
     ny = length(y);
 
 end
 
-%%  make grids
-%   set dimensions ::
-NUMMOD = length(cmip_data); 
+%%  get names for this model
+%   get variables names ::
+group_names = ncread(filename, 'group_names');
+variable_names = ncread(filename, 'variable_names');
+
+%   get number of models ::
+NUMMOD = size(group_names, 1);
+
+%   set number of months ::
 NUMMON = 12;
 
-%   make uvic grid ::
+%%  make grids
+%   make grid ::
 [lat, lon] = meshgrid(y, x);  
 if strcmp(variable, 'sic')
     
@@ -48,23 +72,31 @@ if strcmp(variable, 'sic')
     lon_vec = lon(land_mask);  
     lat_vec = lat(land_mask);
 
+elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
+
+    lon_vec = lon(:); 
+    lat_vec = lat(:);
+
 end
         
 %%  preallocate arrays
-cmip_data_uvic_mod = cell(size(cmip_data));
-cmip_data_uvic = cell([1, NUMMON]);
+cmip_data_interp = cell([1, NUMMOD]);
 
 %%  loop through all models
 %   interpolate ::
 for iMod = 1 : 1 : NUMMOD
 
     %   get sic model data ::
-    model_data = cmip_data{1, iMod}.value;
-    model_lon = cmip_data{1, iMod}.lon;  % full grids to be indexed over
-    model_lat = cmip_data{1, iMod}.lat;
+    model_data = ncread(filename, [group_names{iMod} variable_names{iMod}]);
+    model_lon = ncread(filename, [group_names{iMod} 'lon']);
+    model_lat = ncread(filename, [group_names{iMod} 'lat']);
+
+    %   vectorize coordinates ::
+    model_lon_vec = double(model_lon(:)); 
+    model_lat_vec = double(model_lat(:)); 
 
     %   average data ::
-    disp('Calculating monthly mean climatology.')
+    disp('Calculating monthly mean climatology.');
     model_data_mm = NaN(size(model_data, 1), size(model_data, 2), NUMMON);
     for iMonth = 1 : 1 : NUMMON
 
@@ -74,63 +106,74 @@ for iMod = 1 : 1 : NUMMOD
     end
     model_data = model_data_mm;
 
-    %   make meshgrid if only a vector ::
-    if (sum(size(model_lon) == 1) > 0) || (sum(size(model_lat) == 1) > 0)
-
-        %   meshgrid ::
-        [model_lat, model_lon] = meshgrid(model_lat, model_lon);
-
-    end
-
-    %   make sure that we are only using [0, 360] for longitude ::
-    if sum(size(model_lon) < 0) > 0
-
-        %   correct ::
-        model_lon(model_lon < 0) = model_lon(model_lon < 0) + 360;
-
-    end
-
-    %   make sure that we are only using [0 1] scale ::
-    if sum(size(model_data) > 1) > 0 && strcmp('sic', variable)
-
-        %   correct ::
-        model_data = model_data / 100;  % assume that it is out of 100
-
-    end
-
-    %   make sure we only are using positive values in range ::
-    if strcmp('sic', variable)
-
-        model_data(model_data < 0) = 0;  
-        model_data(model_data > 1) = 1; 
-
-    end
-
     %   write out interpolation ::
-    disp(['Starting Minimum Curvature Interpolation for ' products{iMod, 1}]);
-
-    %   start plot ::        
-    close;
-    t = tiledlayout(3, 4, 'tileSpacing', 'compact');
+    disp(['Starting Linear Interpolation for ' variable_names{iMod}]);
 
     %   interpolate through all months ::
     for iMon = 1 : 1 : NUMMON
 
         %   vectorize data ::
-        model_lon_vec = double(model_lon(:)); 
-        model_lat_vec = double(model_lat(:)); 
         data_vec = model_data(:, :, iMon);
         data_vec = data_vec(:); 
+
+        %   quality control ::
+        %-  make sure that we are only using [0 1] scale ::
+        if sum(data_vec > 1) > 0 && strcmp('sic', variable)
+
+            %   correct ::
+            data_vec = data_vec ./ 100;  % assume that it is out of 100
+
+        end
+
+        %-  make sure we only are using positive values in range ::
+        if strcmp('sic', variable)
+
+            data_vec(data_vec < 0) = 0;  
+            data_vec(data_vec > 1) = 1; 
+
+        end
+
+        %-  make sure that we are only using [0, 360] for longitude ::
+        if sum(model_lon_vec < 0) > 0
+
+            %   correct ::
+            model_lon_vec(model_lon_vec < 0) = model_lon_vec(model_lon_vec < 0) + 360;
+
+        end
+
+        %   make data array ::
         data = rmmissing([model_lon_vec, model_lat_vec, data_vec]);
 
-        %   average duplicate values ::
+        %-  average duplicate values ::
         [unique_coords, ~, idx] = unique(data(:, 1 : 2), 'rows', 'stable');
         unique_values = accumarray(idx, data(:, 3), [], @mean); 
         data = [unique_coords, unique_values];
 
+        %-  remove any 0 values from sic ::
+        if strcmp('sic', variable)
+
+            data = data(unique_values ~= 0, :);
+            
+        end
+
         %   interpolate :: 
-        %[~, ~, data_interp] = mincurvi(data(:, 1), data(:, 2), data(:, 3), lon_vec, lat_vec, [50, 10, 500]); 
-        data_interp = griddata(data(:, 1), data(:, 2), data(:, 3), lon_vec, lat_vec, 'natural'); 
+        if strcmp(variable, 'sic')
+
+            %   interpolate ::
+            Finterp = scatteredInterpolant(data(:, 1), data(:, 2), log(data(:, 3)), 'linear', 'linear'); 
+            data_interp = Finterp(lon_vec, lat_vec); 
+
+            %   return by removing log ::
+            data_interp = exp(data_interp);
+
+        elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
+
+            Finterp = scatteredInterpolant(data(:, 1), data(:, 2), data(:, 3), 'linear', 'linear'); 
+            data_interp = Finterp(lon_vec, lat_vec); 
+
+        end
+ 
+        %   put back into grid if sic ::
         if strcmp(variable, 'sic')
 
             data_noMask = NaN(size(land_mask));
@@ -150,72 +193,16 @@ for iMod = 1 : 1 : NUMMOD
 
         end
 
-        %   plot ::
-        %-  get colorbar limits ::
-        if strcmp(variable, 'sic')
-
-            color_limits = 0 : 0.1 : 1; 
-            color_map = bone(10); 
-
-        elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
-
-            color_limits = linspace(min(shaped_interp, [], 'all'), max(shaped_interp, [], 'all'), 10);
-            color_map = summer(10); 
-
-        end
-
-        %-  plot contourf ::
-        nexttile();
-        m_proj('miller', 'lon', [0 360], 'lat', [min(y) max(y)]);
-        m_contourf(lon, lat, shaped_interp, color_limits, 'edgecolor', 'none');
-        m_coast('patch', [.8 .8 .8]);
-        m_grid('box', 'fancy', 'tickdir', 'in');
-        colormap(color_map);
-        colorbar('eastOutside');
-        title(['Month ' num2str(iMon)]);
-
         %   store ::
-        cmip_data_uvic_mod{1, iMod}(:, :, iMon) = shaped_interp;
+        cmip_data_interp{1, iMod}(:, :, iMon) = shaped_interp;
 
         %   write out how we are doing ::
 	    disp(['Done with interpolation for month ' num2str(iMon)]);
 
     end
 
-    %   title plot ::
-    if strcmp(variable, 'sic')
-
-        title(t, [upper(age) ' ' products{iMod} ' Sea Ice Fraction'], 'fontWeight', 'bold')
-
-    elseif strcmp(variable, 'ua')
-    
-        title(t, [upper(age) ' ' products{iMod} ' U10'], 'fontWeight', 'bold')
-
-    elseif strcmp(variable, 'va')
-
-        title(t, [upper(age) ' ' products{iMod} ' V10'], 'fontWeight', 'bold')
-
-    end
-
-    %   set and save plot ::
-    set(gcf, 'position', [0, 0, 1920, 1000]); 
-    exportgraphics(t, fullfile('io', 'outputs', 'plots', variable, age, [variable '_' age '_' products{iMod} '.png']), 'resolution', 300); 
-
     %   write out how we are doing ::
-	disp(['Done with interpolation for ' products{iMod, 1}]);
-
-end
-
-%%  put into monthly arrays
-%   loop over all months and models ::
-for iMon = 1 : 1 : NUMMON
-
-  for iMod = 1 : 1 : NUMMOD
-
-    %  store data ::
-    cmip_data_uvic{1, iMon}(:, :, iMod) = cmip_data_uvic_mod{1, iMod}(:, :, iMon);
-
-  end
+	disp(['Done with interpolation for ' variable_names{iMod, 1}]);
 
 end
 

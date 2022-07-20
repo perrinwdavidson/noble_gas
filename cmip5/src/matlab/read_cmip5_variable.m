@@ -19,6 +19,9 @@ cmip_model_data = cell(1, NUMMOD);
 %   loop through all models and read data ::
 for iMod = 1 : 1 : NUMMOD
 
+    %   write out how we are doing ::
+	disp(products{iMod, 1});
+
 	%    set path to directory ::
 	iPath = fullfile(paths{1}, products{iMod, 1 : 2}, paths{2}); 
 
@@ -86,9 +89,6 @@ for iMod = 1 : 1 : NUMMOD
 
 	%   store data ::
 	cmip_model_data{iMod} = get_file;
-
-	%   write out how we are doing ::
-	disp(products{iMod, 1});
 
 end
 

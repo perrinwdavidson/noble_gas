@@ -8,29 +8,23 @@
 %%=========================================================================
 %%  configure
 %   set file names ::
-age_filename = fullfile(exp_raw_path, 'cmip5', 'lgm', 'cmip5_sic_lgm_raw_data_monthly.nc'); 
+filenames = {'cmip5_sic_lgm_raw_data_monthly.nc', ...
+             'cmip5_sic_pic_raw_data_monthly.nc', ...
+             'cmip5_u10_lgm_raw_data_monthly.nc', ...
+             'cmip5_u10_pic_raw_data_monthly.nc', ...
+             'cmip5_v10_lgm_raw_data_monthly.nc', ...
+             'cmip5_v10_pic_raw_data_monthly.nc'};
 
-%   get variables names ::
-group_names = ncread(age_filename, 'group_names');
-variable_names = ncread(age_filename, 'variable_names');
+%%  interpolate and save
+%   loop through all files ::
+for iFile = filenames
 
-%   get number of models ::
-NUMMOD = size(group_names, 1);
+    %   interpolate the file ::
+    [interp_lon, interp_lat, cmip_data_interp, variable, age] = interp_cmip5_variable(iFile);
 
-%%  interpolate each model
-%   loop through each model ::
-for iMod = 1 : 1 : NUMMOD
-
-    %   get data ::
-    mod_data = ncread(age_filename, [group_names{iMod} variable_names{iMod}]);
-    mod_lon = ncread(age_filename, [group_names{iMod} 'lon']);
-    mod_lat = ncread(age_filename, [group_names{iMod} 'lat']);
-
-    %   run interpolation ::
-    
-
+    %   write data ::
+    write_cmip5_interp_variable(interp_lon, interp_lat, cmip_data_interp, variable, products, age, fullfile(exp_pro_path, "cmip5", age, strcat("cmip5_", variable, "_", age, "_interp_monthly.nc")));
 
 end
-
 
 %%  end program
