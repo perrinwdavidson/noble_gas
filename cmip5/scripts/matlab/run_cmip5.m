@@ -1,7 +1,7 @@
 %%=========================================================================
 %   run_cmip5_comp
 %%-------------------------------------------------------------------------
-%   purpose: to compile cmip5 windspeed (u10, v10) and sea ice fraction (sic).
+%   purpose: to compile, interpolate, and plot cmip5 windspeed (u10, v10) and sea ice fraction (sic).
 %   author: perrin w. davidson
 %   contact: perrinwdavidson@gmail.com
 %   date: 01.07.22
@@ -45,3 +45,4 @@ interp_variables;
 plot_variables;
 
 %%  end program
+%%=========================================================================

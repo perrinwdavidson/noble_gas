@@ -28,3 +28,4 @@ write_cmip5_variable(cmip5_sic_lgm_raw_data_monthly, variable, products, 'LGM', 
 write_cmip5_variable(cmip5_sic_pic_raw_data_monthly, variable, products, 'PIC', fullfile(exp_raw_path, "cmip5", "pic", "cmip5_sic_pic_raw_data_monthly.nc"))
 
 %%  end program
+%%=========================================================================
