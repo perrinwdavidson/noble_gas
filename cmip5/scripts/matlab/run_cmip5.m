@@ -38,6 +38,12 @@ compile_sic;
 compile_u10; 
 compile_v10;
 
+%   land masks ::
+compile_masks; 
+
+%%  make land mask
+make_masks; % <- I am here.
+
 %%  interpolate data
 interp_variables;
 
