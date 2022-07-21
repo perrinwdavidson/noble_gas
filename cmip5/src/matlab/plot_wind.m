@@ -45,8 +45,8 @@ for iMod = 1 : 1 : NUMMOD
     %-  get stats ::
     mean_wind = mean(model_data, 'all', 'omitnan');
     std_wind = std(model_data, 0, 'all', 'omitnan');
-    min_wind_plot = round((mean_wind - (4 * std_wind)), 0);
-    max_wind_plot = round((mean_wind + (4 * std_wind)), 0);
+    min_wind_plot = round((mean_wind - (5 * std_wind)), 0);
+    max_wind_plot = round((mean_wind + (5 * std_wind)), 0);
     color_limits = round(linspace(min_wind_plot, max_wind_plot, 10), 0);
     % color_limits_ax = round(linspace(min_wind_plot, max_wind_plot, 6), 0);
 

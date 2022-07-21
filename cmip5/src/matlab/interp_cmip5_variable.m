@@ -170,7 +170,7 @@ for iMod = 1 : 1 : NUMMOD
     end
 
     %   write out interpolation ::
-    disp(append('Starting (', interp_type, extrap_type, ') Interpolation for ', variable_names{iMod}));
+    disp(append('Starting (', interp_type, ', ', extrap_type, ') Interpolation for ', variable_names{iMod}));
 
     %   interpolate through all months ::
     for iMon = 1 : 1 : NUMMON
