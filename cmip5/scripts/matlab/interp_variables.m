@@ -17,7 +17,7 @@ filenames = {'cmip5_sic_lgm_raw_data_monthly.nc', ...
 
 %   set interpolation and extrapolation types ::
 interp_type = 'linear';  % linear, nearest, natural
-extrap_type = 'linear';  % linear, nearest
+extrap_type = 'nearest';  % linear, nearest
 
 %%  interpolate and save
 %   loop through all files ::
