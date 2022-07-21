@@ -7,7 +7,7 @@ function zonal_mean = calc_zonal_mean(lat, data)
 %--------------------------------------------------------------------------
 %%  configure
 %   let me know what is going on ::
-disp('Calculating zonal mean windspeed.');
+disp("Calculating zonal mean windspeed.");
 
 %   get dimensions ::
 NUMMOD = size(data, 2); 
@@ -23,10 +23,10 @@ for iMod = 1 : 1 : NUMMOD
     mod_data = data{iMod};
 
     %   calculate zonal mean ::
-    zonal_mean{iMod}.value = squeeze(mean(mod_data, 1, 'omitnan')); 
+    zonal_mean{iMod}.value = squeeze(mean(mod_data, 1, "omitnan")); 
 
     %   calculate zonal mean latitude ::
-    zonal_mean{iMod}.lat = mean(lat, 1, 'omitnan')';
+    zonal_mean{iMod}.lat = mean(lat, 1, "omitnan")';
 
 end
 

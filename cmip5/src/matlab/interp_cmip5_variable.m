@@ -9,13 +9,13 @@ function [lon, lat, cmip_data_interp, variable_old, age] = interp_cmip5_variable
 %   get variable name ::
 variable = filename(7 : 9);
 variable_old = variable; 
-if strcmp(variable, "u10")  % rename to cmip5
+if strcmp(variable, 'u10')  % rename to cmip5
 
-    variable = "ua"; 
+    variable = 'ua'; 
 
-elseif strcmp(variable, "v10")  % rename to cmip5
+elseif strcmp(variable, 'v10')  % rename to cmip5
 
-    variable = "va";
+    variable = 'va';
 
 end
 
@@ -87,9 +87,9 @@ cmip_data_interp = cell([1, NUMMOD]);
 for iMod = 1 : 1 : NUMMOD
 
     %   get sic model data ::
-    model_data = ncread(filename, [group_names{iMod} variable_names{iMod}]);
-    model_lon = ncread(filename, [group_names{iMod} 'lon']);
-    model_lat = ncread(filename, [group_names{iMod} 'lat']);
+    model_data = ncread(filename, append(group_names{iMod}, variable_names{iMod}));
+    model_lon = ncread(filename, append(group_names{iMod}, 'lon'));
+    model_lat = ncread(filename, append(group_names{iMod}, 'lat'));
 
     %   vectorize coordinates ::
     model_lon_vec = double(model_lon(:)); 
@@ -107,7 +107,7 @@ for iMod = 1 : 1 : NUMMOD
     model_data = model_data_mm;
 
     %   write out interpolation ::
-    disp(['Starting Linear Interpolation for ' variable_names{iMod}]);
+    disp(append('Starting Linear Interpolation for ', variable_names{iMod}));
 
     %   interpolate through all months ::
     for iMon = 1 : 1 : NUMMON
@@ -176,7 +176,7 @@ for iMod = 1 : 1 : NUMMOD
         %   put back into grid if sic ::
         if strcmp(variable, 'sic')
 
-            data_noMask = NaN(size(land_mask));
+            data_noMask = zeros(size(land_mask));
             data_noMask(ind_lm) = data_interp;
             data_interp = data_noMask;
 
@@ -197,12 +197,12 @@ for iMod = 1 : 1 : NUMMOD
         cmip_data_interp{1, iMod}(:, :, iMon) = shaped_interp;
 
         %   write out how we are doing ::
-	    disp(['Done with interpolation for month ' num2str(iMon)]);
+	    disp(append('Done with interpolation for month ', num2str(iMon)));
 
     end
 
     %   write out how we are doing ::
-	disp(['Done with interpolation for ' variable_names{iMod, 1}]);
+	disp(append('Done with interpolation for ', variable_names{iMod, 1}));
 
 end
 

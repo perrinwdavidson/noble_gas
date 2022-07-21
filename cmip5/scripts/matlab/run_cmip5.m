@@ -8,7 +8,7 @@
 %%=========================================================================
 %%  configure
 %   deal with the environment ::
-cd("/Users/perrindavidson/research/whoi/current/noble_gas/cmip5")
+cd('/Users/perrindavidson/research/whoi/current/noble_gas/cmip5')
 clear; 
 close;
 clc;
@@ -17,8 +17,8 @@ clc;
 addpath(genpath(pwd));
 
 %   set input and output paths ::
-exp_raw_path = fullfile(pwd, "data", "exp_raw"); 
-exp_pro_path = fullfile(pwd, "data", "exp_pro");
+exp_raw_path = fullfile(pwd, 'data', 'exp_raw'); 
+exp_pro_path = fullfile(pwd, 'data', 'exp_pro');
 
 %%  set global model parameters
 %   write down the products that you want of the form {institute, model} ::

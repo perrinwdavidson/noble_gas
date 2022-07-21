@@ -24,8 +24,8 @@ cmip5_u10_lgm_raw_data_monthly = read_cmip5_variable(variable, products, lgm_pat
 cmip5_u10_pic_raw_data_monthly = read_cmip5_variable(variable, products, pic_paths); 
 
 %%  make netcdf
-write_cmip5_variable(cmip5_u10_lgm_raw_data_monthly, variable, products, 'LGM', fullfile(exp_raw_path, "cmip5", "lgm", "cmip5_u10_lgm_raw_data_monthly.nc"))
-write_cmip5_variable(cmip5_u10_pic_raw_data_monthly, variable, products, 'PIC', fullfile(exp_raw_path, "cmip5", "pic", "cmip5_u10_pic_raw_data_monthly.nc"))
+write_cmip5_variable(cmip5_u10_lgm_raw_data_monthly, variable, products, 'lgm', fullfile(exp_raw_path, 'cmip5', 'lgm', 'cmip5_u10_lgm_raw_data_monthly.nc'));
+write_cmip5_variable(cmip5_u10_pic_raw_data_monthly, variable, products, 'pic', fullfile(exp_raw_path, 'cmip5', 'pic', 'cmip5_u10_pic_raw_data_monthly.nc'));
 
 %%  end program
 %%=========================================================================

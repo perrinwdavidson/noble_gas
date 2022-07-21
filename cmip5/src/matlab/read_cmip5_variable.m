@@ -6,7 +6,7 @@ function cmip_model_data = read_cmip5_variable(variable, products, paths)
 %   date: 06.07.22
 %--------------------------------------------------------------------------
 %%  let me know what is going o
-disp(['Aggregating raw CMIP5 ' upper(variable) ' model data from:']); 
+disp(append('Aggregating raw CMIP5 ', upper(variable), ' model data from:')); 
 
 %%  retrieve important stats
 %   get number of models to read ::
@@ -77,7 +77,7 @@ for iMod = 1 : 1 : NUMMOD
         %   show some files ::
         if mod(iFile, 10) == 0
 
-            disp(['Done reading file ' num2str(iFile)]);
+            disp(append('Done reading file ', num2str(iFile)));
 
         end
 
