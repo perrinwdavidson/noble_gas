@@ -1,4 +1,4 @@
-function plot_ice(filename1, products, variable, age)
+function plot_ice(filename1, products, variable, age, use_stats)
 %--------------------------------------------------------------------------
 %   purpose: plotting sea ice.
 %   author: perrin w. davidson
@@ -26,7 +26,7 @@ NUMMOD = size(group_names, 1);
 NUMMON = 12;
 
 %   set colors ::
-color_map = winter(10); 
+color_map = winter(16); 
 
 %%  loop through all models
 for iMod = 1 : 1 : NUMMOD
@@ -43,12 +43,28 @@ for iMod = 1 : 1 : NUMMOD
 
     %   get limits ::
     %-  get stats ::
-    mean_wind = mean(model_data, 'all', 'omitnan');
-    std_wind = std(model_data, 0, 'all', 'omitnan');
-    min_wind_plot = round((mean_wind - (5 * std_wind)), 0);
-    max_wind_plot = round((mean_wind + (5 * std_wind)), 0);
-    color_limits = round(linspace(min_wind_plot, max_wind_plot, 10), 0);
-    % color_limits_ax = round(linspace(min_wind_plot, max_wind_plot, 6), 0);
+    if use_stats
+
+        %   get stats ::
+        mean_wind = mean(model_data, 'all', 'omitnan');
+        std_wind = std(model_data, 0, 'all', 'omitnan');
+        min_wind_plot = round((mean_wind - (3 * std_wind)), 0);
+        max_wind_plot = round((mean_wind + (3 * std_wind)), 0);
+
+        %   make limits ::
+        color_limits = round(linspace(min_wind_plot, max_wind_plot, 16), 0);
+        color_limits_ax = round(linspace(min_wind_plot, max_wind_plot, 8), 0);
+        color_range = [min_wind_plot, max_wind_plot];
+
+    %- use hardcoded ::
+    else
+        
+        %   set limits ::
+        color_limits = -20 : 5 : 20;
+        color_limits_ax = color_limits;
+        color_range = [-20, 20];
+        
+    end
 
     %   loop through all months ::
     for iMon = 1 : 1 : NUMMON
@@ -64,7 +80,7 @@ for iMod = 1 : 1 : NUMMOD
         m_grid('box', 'fancy', 'tickdir', 'in');
         colormap(color_map);
         color_ax = colorbar('eastOutside');
-        % set(color_ax, 'tickdir', 'in', 'ticks', color_limits_ax, 'xLim', [min_wind_plot, max_wind_plot]);
+        set(color_ax, 'tickdir', 'in', 'ticks', color_limits_ax, 'xLim', color_range);
         title(month_names(iMon));
 
     end

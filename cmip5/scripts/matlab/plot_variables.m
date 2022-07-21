@@ -37,7 +37,7 @@ for iFile = 1 : 1 : size(filenames_global, 2)
         age = filename1(5 : 7);
 
             %   plot ::
-            plot_wind(filename1, products, variable, age);
+            plot_wind(filename1, products, variable, age, 1);
 
     %   plot sea ice ::
     elseif strcmp(variable, 'sic')
