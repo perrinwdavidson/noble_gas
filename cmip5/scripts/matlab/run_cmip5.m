@@ -39,11 +39,7 @@ compile_u10;
 compile_v10;
 
 %%  interpolate data
-%-  interpolate all data to appropriate grids ::
 interp_variables;
-
-%-  calculate zonal mean for wind ::
-calc_zonal_mean; 
 
 %%  plot data
 plot_variables;

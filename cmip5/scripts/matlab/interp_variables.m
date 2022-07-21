@@ -22,9 +22,24 @@ for iFile = filenames
     %   interpolate the file ::
     [interp_lon, interp_lat, cmip_data_interp, variable, age] = interp_cmip5_variable(iFile);
 
+    %   calculate zonal wind ::
+    if strcmp(variable, 'u10') || strcmp(variable, 'v10')
+
+        zonal_mean = calc_zonal_mean(interp_lat, cmip_data_interp); 
+
+    end
+
     %   write data ::
+    %-  interpolated variable ::
     write_cmip5_interp_variable(interp_lon, interp_lat, cmip_data_interp, variable, products, age, fullfile(exp_pro_path, "cmip5", age, strcat("cmip5_", variable, "_", age, "_interp_monthly.nc")));
 
+    %-  zonal mean windspeed ::
+    if strcmp(variable, 'u10') || strcmp(variable, 'v10')
+
+        write_cmip5_zonal_windspeed(zonal_mean, variable, products, age, fullfile(exp_pro_path, "cmip5", age, strcat("cmip5_", variable, "_", age, "_zonal_mean_monthly.nc")));
+
+    end
+    
 end
 
 %%  end program
