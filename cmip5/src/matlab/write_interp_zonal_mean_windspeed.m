@@ -29,29 +29,27 @@ variable_names = cell(NUMMOD, 1);
 for iMod = 1 : 1 : NUMMOD
 
     %   get data ::
-    mod_data = cmip_data{iMod}; 
+    mod_data = cmip_data{iMod}.value; 
+    mod_lat = cmip_data{iMod}.lat; 
 
     %   make group and variable names ::
     group_name = append(products{iMod, 1}, ' ', products{iMod, 2}); 
-    variable_name = append(group_name, ' ' , age, ' ', upper(variable)); 
+    variable_name = append(group_name, ' ' , upper(age), ' ', upper(variable)); 
 
     %   define ::
     %-  make group ::
     mod_group_id = netcdf.defGrp(nc_id, group_name);
 
     %-  make dimensions ::
-    x_id = netcdf.defDim(mod_group_id, 'x', size(mod_data, 1));
-    y_id = netcdf.defDim(mod_group_id, 'y', size(mod_data, 2));
-    t_id = netcdf.defDim(mod_group_id, 'month', size(mod_data, 3));
+    y_id = netcdf.defDim(mod_group_id, 'y', size(mod_data, 1));
+    t_id = netcdf.defDim(mod_group_id, 'month', size(mod_data, 2));
 
     %-  make variables ::
-    mod_data_id = netcdf.defVar(mod_group_id, variable_name, 'NC_DOUBLE', [x_id, y_id, t_id]);
-    mod_lon_id = netcdf.defVar(mod_group_id, 'lon', 'NC_DOUBLE', [x_id, y_id]);
-    mod_lat_id = netcdf.defVar(mod_group_id, 'lat', 'NC_DOUBLE', [x_id, y_id]);
+    mod_data_id = netcdf.defVar(mod_group_id, variable_name, 'NC_DOUBLE', [y_id, t_id]);
+    mod_lat_id = netcdf.defVar(mod_group_id, 'lat', 'NC_DOUBLE', y_id);
 
     %-  define fill values ::
     netcdf.defVarFill(mod_group_id, mod_data_id, false, -99999);
-    netcdf.defVarFill(mod_group_id, mod_lon_id, true, -99999);
     netcdf.defVarFill(mod_group_id, mod_lat_id, true, -99999);
 
     %-  end define mode ::
@@ -59,7 +57,6 @@ for iMod = 1 : 1 : NUMMOD
 
     %   write ::
     netcdf.putVar(mod_group_id, mod_data_id, mod_data)
-    netcdf.putVar(mod_group_id, mod_lon_id, mod_lon)
     netcdf.putVar(mod_group_id, mod_lat_id, mod_lat)
 
     %   display ::

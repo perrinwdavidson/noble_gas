@@ -13,7 +13,7 @@ filenames = {'cmip5_sic_lgm_raw_data_monthly.nc', ...
              'cmip5_u10_lgm_raw_data_monthly.nc', ...
              'cmip5_u10_pic_raw_data_monthly.nc', ...
              'cmip5_v10_lgm_raw_data_monthly.nc', ...
-             'cmip5_v10_pic_raw_data_monthly.nc'};
+             'cmip5_v10_pic_raw_data_monthly.nc'}; 
 
 %%  interpolate and save
 %   loop through all files ::
@@ -30,7 +30,7 @@ for iFile = filenames
     if strcmp(variable, 'u10') || strcmp(variable, 'v10')
 
         %   calculate ::
-        zonal_mean = calc_zonal_mean(cmip_data_interp); 
+        zonal_mean = calc_zonal_mean(interp_lat, cmip_data_interp); 
 
     end
 

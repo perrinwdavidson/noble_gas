@@ -66,20 +66,20 @@ elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
 
 end
 
-%%  get names for this model
+%%  get inputs for this model
 %   get variables names ::
 group_names = ncread(filename, 'group_names');
 variable_names = ncread(filename, 'variable_names');
 
 %   append uvic ::
-group_names = [group_names; {append('UVic ', age, ' Default')}];
+group_names = [group_names; {append('UVic ', upper(age), ' Default')}];
 if strcmp(variable, 'sic')
 
-    variable_names = [variable_names; {append('UVic Default ', age, ' SIC')}];
+    variable_names = [variable_names; {append('UVic Default ', upper(age), ' SIC')}];
 
 elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
 
-    variable_names = [variable_names; {append('UVic Default ', age, ' Windspeed')}];
+    variable_names = [variable_names; {append('UVic Default ', upper(age), ' Windspeed')}];
 
 end
 

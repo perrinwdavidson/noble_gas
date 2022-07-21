@@ -8,10 +8,10 @@
 %%=========================================================================
 %%  configure
 %   deal with the environment ::
+clc;
 cd('/Users/perrindavidson/research/whoi/current/noble_gas/cmip5')
 clear; 
 close;
-clc;
 
 %   add all subdirectories to path ::
 addpath(genpath(pwd));
@@ -39,7 +39,7 @@ compile_u10;
 compile_v10;
 
 %%  interpolate data
-interp_variables;  %<- NEED TO DEBUG!
+interp_variables;
 
 %%  plot data
 plot_variables;  %<- NEED TO DEBUG!

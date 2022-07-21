@@ -1,4 +1,4 @@
-function zonal_mean = calc_zonal_mean(data)
+function zonal_mean = calc_zonal_mean(lat, data)
 %--------------------------------------------------------------------------
 %   purpose: calculating zonal mean windspeed for cmip5 data at core-2 grid
 %   author: perrin w. davidson
