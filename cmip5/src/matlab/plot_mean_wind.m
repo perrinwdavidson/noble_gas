@@ -8,7 +8,17 @@ function plot_mean_wind(variable, filename1, filename2)
 %%  let me know what is going on
 disp(append('Plotting zonally averaged ', upper(variable))); 
 
-%%%%%%%%%%% ------- work zone below ----------- %%%%%%%%%%
+%%  load uvic data
+%   lgm ::
+windspeed_uvic_lgm = ncread(fullfile('data', 'exp_pro', 'uvic', 'lgm', filename1), 'UVic LGM Zonally Averaged Windspeed');
+lat_uvic_lgm = ncread(fullfile('data', 'exp_pro', 'uvic', 'lgm', filename1), 'lat');
+
+%   pic ::
+windspeed_uvic_pic = ncread(fullfile('data', 'exp_pro', 'uvic', 'pic', filename2), 'UVic PIC Zonally Averaged Windspeed');
+lat_uvic_pic = ncread(fullfile('data', 'exp_pro', 'uvic', 'pic', filename2), 'lat');
+
+
+
 
 %%  make grids
 %   set dimensions ::

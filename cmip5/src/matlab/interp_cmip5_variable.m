@@ -37,14 +37,28 @@ end
 %   uvic data ::
 if strcmp(variable, 'sic')
         
+    %   grid data ::
     load(fullfile('data', 'exp_raw', 'uvic', 'grid'), 'x', 'y', 'nx', 'ny', 'ideep');
+    [uvic_lat, uvic_lon] = meshgrid(y, x);  
+
+    %   ice faction ::
+    load(fullfile('data', 'exp_raw', 'uvic', age, 'ice_fraction'), 'Fice');
+
+    %   make land mask ::
     ideep(ideep ~= 0) = 1; 
     ind_lm = find(ideep(:) == 1);
     land_mask = logical(ideep(:));
     clear('ideep');
 
+%   core grid ::
 elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
 
+    %   uvic ::
+    load(fullfile('data', 'exp_raw', 'uvic', 'grid'), 'x', 'y');
+    load(fullfile('data', 'exp_raw', 'uvic', age, 'wind_speed'), 'windspeed');
+    [uvic_lat, uvic_lon] = meshgrid(y, x);  
+
+    %   core grid ::
     x = ncread(fullfile('data', 'exp_raw', 'core2', 'u_10.15JUNE2009.nc'), 'LON');
     y = ncread(fullfile('data', 'exp_raw', 'core2', 'u_10.15JUNE2009.nc'), 'LAT');
     nx = length(x); 
@@ -56,6 +70,18 @@ end
 %   get variables names ::
 group_names = ncread(filename, 'group_names');
 variable_names = ncread(filename, 'variable_names');
+
+%   append uvic ::
+group_names = [group_names; {append('UVic ', age, ' Default')}];
+if strcmp(variable, 'sic')
+
+    variable_names = [variable_names; {append('UVic Default ', age, ' SIC')}];
+
+elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
+
+    variable_names = [variable_names; {append('UVic Default ', age, ' Windspeed')}];
+
+end
 
 %   get number of models ::
 NUMMOD = size(group_names, 1);
@@ -80,31 +106,65 @@ elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
 end
         
 %%  preallocate arrays
-cmip_data_interp = cell([1, NUMMOD]);
+cmip_data_interp = cell([1, NUMMOD]); 
 
 %%  loop through all models
 %   interpolate ::
 for iMod = 1 : 1 : NUMMOD
 
-    %   get sic model data ::
-    model_data = ncread(filename, append(group_names{iMod}, variable_names{iMod}));
-    model_lon = ncread(filename, append(group_names{iMod}, 'lon'));
-    model_lat = ncread(filename, append(group_names{iMod}, 'lat'));
+    %   for cmip5 ::
+    if iMod < 8
 
-    %   vectorize coordinates ::
-    model_lon_vec = double(model_lon(:)); 
-    model_lat_vec = double(model_lat(:)); 
+        %   get model data ::
+        model_data = ncread(filename, append(group_names{iMod}, variable_names{iMod}));
+        model_lon = ncread(filename, append(group_names{iMod}, 'lon'));
+        model_lat = ncread(filename, append(group_names{iMod}, 'lat'));
 
-    %   average data ::
-    disp('Calculating monthly mean climatology.');
-    model_data_mm = NaN(size(model_data, 1), size(model_data, 2), NUMMON);
-    for iMonth = 1 : 1 : NUMMON
+        %   vectorize coordinates ::
+        model_lon_vec = double(model_lon(:)); 
+        model_lat_vec = double(model_lat(:)); 
 
-        %   calculate mean ::
-        model_data_mm(:, :, iMonth) = mean(model_data(:, :, iMonth : 12 : end), 3, 'omitnan');
+    %   for uvic ::
+    elseif iMod == 8
+
+        %   if sic ::
+        if strcmp(variable, 'sic')
+
+            %   get model data ::
+            model_data = Fice;
+            model_lon = uvic_lon; 
+            model_lat = uvic_lat;
+
+        %   if windspeed ::
+        elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
+
+            %   get model data ::
+            model_data = windspeed;
+            model_lon = uvic_lon;
+            model_lat = uvic_lat;
+
+        end
+
+        %   vectorize coordinates ::
+        model_lon_vec = double(model_lon(:)); 
+        model_lat_vec = double(model_lat(:)); 
 
     end
-    model_data = model_data_mm;
+
+    %   average data ::
+    if iMod < 8 
+
+        disp('Calculating monthly mean climatology.');
+        model_data_mm = NaN(size(model_data, 1), size(model_data, 2), NUMMON);
+        for iMonth = 1 : 1 : NUMMON
+
+            %   calculate mean ::
+            model_data_mm(:, :, iMonth) = mean(model_data(:, :, iMonth : 12 : end), 3, 'omitnan');
+
+        end
+        model_data = model_data_mm;
+
+    end
 
     %   write out interpolation ::
     disp(append('Starting Linear Interpolation for ', variable_names{iMod}));

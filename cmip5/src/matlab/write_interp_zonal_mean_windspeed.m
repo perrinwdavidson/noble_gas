@@ -1,13 +1,13 @@
-function write_cmip5_interp_variable(mod_lon, mod_lat, cmip_data, variable, products, age, filename)
+function write_interp_zonal_mean_windspeed(mod_lon, mod_lat, cmip_data, variable, products, age, filename)
 %--------------------------------------------------------------------------
-%   purpose: saving interpolated cmip data to a netcdf file
+%   purpose: saving interpolated uvic and cmip windspeed data to a netcdf file.
 %   author: perrin w. davidson
 %   contact: perrinwdavidson@gmail.com
 %   date: 06.07.22
 %--------------------------------------------------------------------------
 %%  configure
 %   let me know what is going on ::
-disp(append('Writing interpolated CMIP5 model data for ', upper(variable), ' to a netCDF file.'));
+disp(append('Writing interpolated CMIP5 and UVic model data for ', upper(variable), ' to a netCDF file.'));
 
 %   get all models ::
 NUMMOD = length(cmip_data); 
@@ -23,6 +23,9 @@ nc_id = netcdf.create(filename, 'NETCDF4');
 %   make paths ::
 group_names = cell(NUMMOD, 1);
 variable_names = cell(NUMMOD, 1);
+
+%   modify products to include uvic ::
+products = [products; {'UVic', 'Default'}];
 
 %%  write data
 %   loop through all models ::
