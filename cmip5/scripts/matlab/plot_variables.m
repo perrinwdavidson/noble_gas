@@ -8,23 +8,22 @@
 %%=========================================================================
 %%  configure
 %   set file names ::
-filenames = {'cmip5_sic_lgm_interp_monthly.nc', ...
-             'cmip5_sic_pic_interp_monthly.nc', ...
-             'cmip5_u10_lgm_zonal_mean_monthly.nc', ...
-             'cmip5_u10_pic_zonal_mean_monthly.nc', ...
-             'uvic_windspeed_lgm_zonal_mean_monthly.nc', ...
-             'cmip5_v10_lgm_zonal_mean_monthly.nc', ...
-             'cmip5_v10_pic_zonal_mean_monthly.nc'};  % preserve ordering of {lgm, pic}
+filenames = {'sic_lgm_interp_monthly.nc', ...
+             'sic_pic_interp_monthly.nc', ...
+             'u10_lgm_zonal_mean_interp_monthly.nc', ...
+             'u10_pic_zonal_mean_interp_monthly.nc', ...
+             'v10_lgm_zonal_mean_interp_monthly.nc', ...
+             'v10_pic_zonal_mean_interp_monthly.nc'};  % preserve ordering of {lgm, pic}
 
 %%  plot
 %   loop through all files ::
-for iFile = 1 : 1 : size(filenames, 2)
+while iFile < size(filenames, 2)
 
     %   get filename ::
     filename1 = filenames{iFile};
 
     %   get variable ::
-    variable = filename1(7 : 9);
+    variable = filename1(1 : 3);
 
     %   plot zonal mean wind ::
     if strcmp(variable, 'u10') || strcmp(variable, 'v10')
@@ -33,18 +32,21 @@ for iFile = 1 : 1 : size(filenames, 2)
         filename2 = filenames{iFile + 1};
 
         %   plot ::
-        plot_mean_wind(variable, filename1, filename2); 
+        plot_mean_wind(variable, filename1, filename2, products); 
 
         %   iterate ::
-        iFile = iFile + 1; 
+        iFile = iFile + 2; 
 
     %   plot sea ice ::
     elseif strcmp(variable, 'sic')
 
         %   plot ::
-        plot_ice(filename1);
+        plot_ice(filename1, products);
 
     end
+
+    %   iterate ::
+    iFile = iFile + 1; 
     
 end
 

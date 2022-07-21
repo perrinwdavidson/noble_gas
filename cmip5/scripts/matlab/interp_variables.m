@@ -24,7 +24,7 @@ for iFile = filenames
     filename = iFile{:};
 
     %   interpolate the file ::
-    [interp_lon, interp_lat, cmip_data_interp, variable, age] = interp_cmip5_variable(filename);
+    [interp_lon, interp_lat, cmip_data_interp, variable, age, products] = interp_cmip5_variable(filename, products);
 
     %   calculate zonal wind ::
     if strcmp(variable, 'u10') || strcmp(variable, 'v10')

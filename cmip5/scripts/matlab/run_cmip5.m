@@ -39,10 +39,10 @@ compile_u10;
 compile_v10;
 
 %%  interpolate data
-interp_variables;
+interp_variables;  %<- NEED TO DEBUG!
 
 %%  plot data
-plot_variables;
+plot_variables;  %<- NEED TO DEBUG!
 
 %%  end program
 %%=========================================================================

@@ -1,4 +1,4 @@
-function [lon, lat, cmip_data_interp, variable_old, age] = interp_cmip5_variable(filename)
+function [lon, lat, cmip_data_interp, variable_old, age, products] = interp_cmip5_variable(filename, products)
 %--------------------------------------------------------------------------
 %   purpose: interpolating cmip5 data to uvic or core-2 grids
 %   author: perrin w. davidson
@@ -82,6 +82,9 @@ elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
     variable_names = [variable_names; {append('UVic Default ', age, ' Windspeed')}];
 
 end
+
+%   modify products to include uvic ::
+products = [products; {'UVic', 'Default'}];
 
 %   get number of models ::
 NUMMOD = size(group_names, 1);

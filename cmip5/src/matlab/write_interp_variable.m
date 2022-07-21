@@ -24,9 +24,6 @@ nc_id = netcdf.create(filename, 'NETCDF4');
 group_names = cell(NUMMOD, 1);
 variable_names = cell(NUMMOD, 1);
 
-%   modify products to include uvic ::
-products = [products; {'UVic', 'Default'}];
-
 %%  write data
 %   loop through all models ::
 for iMod = 1 : 1 : NUMMOD
