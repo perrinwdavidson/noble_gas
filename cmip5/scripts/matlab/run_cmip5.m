@@ -42,7 +42,7 @@ compile_v10;
 interp_variables;
 
 %%  plot data
-plot_variables;  %<- NEED TO DEBUG!
+plot_variables; 
 
 %%  end program
 %%=========================================================================

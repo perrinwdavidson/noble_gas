@@ -26,8 +26,7 @@ NUMMOD = size(group_names, 1);
 NUMMON = 12;
 
 %   set colors ::
-color_limits = 0 : 0.1 : 1; 
-color_map = bone(10); 
+color_map = winter(10); 
 
 %%  loop through all models
 for iMod = 1 : 1 : NUMMOD
@@ -41,6 +40,15 @@ for iMod = 1 : 1 : NUMMOD
     %   start plot ::        
     close;
     t = tiledlayout(3, 4, 'tileSpacing', 'compact');
+
+    %   get limits ::
+    %-  get stats ::
+    mean_wind = mean(model_data, 'all', 'omitnan');
+    std_wind = std(model_data, 0, 'all', 'omitnan');
+    min_wind_plot = round((mean_wind - (4 * std_wind)), 0);
+    max_wind_plot = round((mean_wind + (4 * std_wind)), 0);
+    color_limits = round(linspace(min_wind_plot, max_wind_plot, 10), 0);
+    % color_limits_ax = round(linspace(min_wind_plot, max_wind_plot, 6), 0);
 
     %   loop through all months ::
     for iMon = 1 : 1 : NUMMON
@@ -56,17 +64,17 @@ for iMod = 1 : 1 : NUMMOD
         m_grid('box', 'fancy', 'tickdir', 'in');
         colormap(color_map);
         color_ax = colorbar('eastOutside');
-        set(color_ax, 'tickdir', 'in', 'ticks', 0 : 0.2 : 1, 'xLim', [0, 1]);
+        % set(color_ax, 'tickdir', 'in', 'ticks', color_limits_ax, 'xLim', [min_wind_plot, max_wind_plot]);
         title(month_names(iMon));
 
     end
 
     %   title ::
-    title(t, append(upper(age), ' ', products{iMod, 1}, ' Sea Ice Fraction'), 'fontWeight', 'bold')
+    title(t, append(upper(age), ' ', products{iMod, 1}, ' ', upper(variable)), 'fontWeight', 'bold')
 
     %   set and save plot ::
     set(gcf, 'position', [0, 0, 1920, 1000]); 
-    exportgraphics(t, fullfile('plots', 'ice', age, strcat(variable, '_', age, '_', products{iMod, 1}, '.png')), 'resolution', 300); 
+    exportgraphics(t, fullfile('plots', 'wind', 'global', age, strcat(variable, '_global_', age, '_', products{iMod, 1}, '.png')), 'resolution', 300); 
 
 end
 

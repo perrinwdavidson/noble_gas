@@ -1,4 +1,4 @@
-function [lon, lat, cmip_data_interp, variable_old, age, products] = interp_cmip5_variable(filename, products)
+function [lon, lat, cmip_data_interp, variable_old, age, products] = interp_cmip5_variable(filename, products, interp_type, extrap_type)
 %--------------------------------------------------------------------------
 %   purpose: interpolating cmip5 data to uvic or core-2 grids
 %   author: perrin w. davidson
@@ -170,7 +170,7 @@ for iMod = 1 : 1 : NUMMOD
     end
 
     %   write out interpolation ::
-    disp(append('Starting Linear Interpolation for ', variable_names{iMod}));
+    disp(append('Starting (', interp_type, extrap_type, ') Interpolation for ', variable_names{iMod}));
 
     %   interpolate through all months ::
     for iMon = 1 : 1 : NUMMON
@@ -223,7 +223,7 @@ for iMod = 1 : 1 : NUMMOD
         if strcmp(variable, 'sic')
 
             %   interpolate ::
-            Finterp = scatteredInterpolant(data(:, 1), data(:, 2), log(data(:, 3)), 'linear', 'linear'); 
+            Finterp = scatteredInterpolant(data(:, 1), data(:, 2), log(data(:, 3)), interp_type, extrap_type); 
             data_interp = Finterp(lon_vec, lat_vec); 
 
             %   return by removing log ::
@@ -231,7 +231,7 @@ for iMod = 1 : 1 : NUMMOD
 
         elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
 
-            Finterp = scatteredInterpolant(data(:, 1), data(:, 2), data(:, 3), 'linear', 'linear'); 
+            Finterp = scatteredInterpolant(data(:, 1), data(:, 2), data(:, 3), interp_type, extrap_type); 
             data_interp = Finterp(lon_vec, lat_vec); 
 
         end
@@ -253,6 +253,13 @@ for iMod = 1 : 1 : NUMMOD
 
             shaped_interp(shaped_interp < 0) = 0;
             shaped_interp(shaped_interp > 1) = 1;
+
+        end
+
+        %   replace if sic, as interpolation to same locations gives skewed results ::
+        if strcmp(variable, 'sic') && (iMod == 8)
+
+            shaped_interp = Fice(:, :, iMon); 
 
         end
 

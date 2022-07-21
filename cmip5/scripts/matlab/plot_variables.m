@@ -13,9 +13,16 @@ filenames = {'sic_lgm_interp_monthly.nc', ...
              'u10_lgm_zonal_mean_interp_monthly.nc', ...
              'u10_pic_zonal_mean_interp_monthly.nc', ...
              'v10_lgm_zonal_mean_interp_monthly.nc', ...
-             'v10_pic_zonal_mean_interp_monthly.nc'};  % preserve ordering of {lgm, pic}
+             'v10_pic_zonal_mean_interp_monthly.nc', ...
+             'u10_lgm_interp_monthly.nc', ...
+             'u10_pic_interp_monthly.nc', ...
+             'v10_lgm_interp_monthly.nc', ...
+             'v10_pic_interp_monthly.nc'};  % preserve ordering of {lgm, pic}
 
 %%  plot
+%   set initial value ::
+iFile = 1; 
+
 %   loop through all files ::
 while iFile < size(filenames, 2)
 
@@ -25,23 +32,43 @@ while iFile < size(filenames, 2)
     %   get variable ::
     variable = filename1(1 : 3);
 
-    %   plot zonal mean wind ::
+    %   plot wind ::
     if strcmp(variable, 'u10') || strcmp(variable, 'v10')
 
-        %   get second filename ::
-        filename2 = filenames{iFile + 1};
+        %   get kind ::
+        wind_kind = filename1(9 : 13);
 
-        %   plot ::
-        plot_mean_wind(variable, filename1, filename2, products); 
+        %   get age ::
+        age = filename1(5 : 7);
 
-        %   iterate ::
-        iFile = iFile + 2; 
+        %   plot zonal mean ::
+        if strcmp(wind_kind, 'zonal')
+
+            %   get second filename ::
+            filename2 = filenames{iFile + 1};
+
+            %   plot ::
+            plot_mean_wind(variable, filename1, filename2, products, age); 
+
+            %   iterate ::
+            iFile = iFile + 2; 
+
+        %    plot geographic distribution ::
+        else
+
+            %   plot ::
+            plot_wind(filename1, products, variable, age);
+
+        end
 
     %   plot sea ice ::
     elseif strcmp(variable, 'sic')
 
+        %   get age ::
+        age = filename1(5 : 7);
+
         %   plot ::
-        plot_ice(filename1, products);
+        plot_ice(filename1, products, variable, age);
 
     end
 
