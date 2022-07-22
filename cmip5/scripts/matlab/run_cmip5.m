@@ -42,7 +42,7 @@ compile_v10;
 compile_masks;  
 
 %%  make land mask
-make_masks;  % <- I am here. Need to make sure everything below is unchanged.
+make_masks; 
 
 %%  interpolate data
 interp_variables;

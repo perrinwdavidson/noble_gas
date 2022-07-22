@@ -64,7 +64,7 @@ for iMod = 1 : 1 : NUMMOD
 
         %   make mask ::
         model_data_mask = model_data; 
-        model_data(model_data_mask =< land_crit) = 1; 
+        model_data(model_data_mask <= land_crit) = 1; 
         model_data(model_data_mask > land_crit) = 0; 
 
     %   for uvic ::
