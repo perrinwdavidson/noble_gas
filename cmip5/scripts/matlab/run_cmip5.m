@@ -39,10 +39,10 @@ compile_u10;
 compile_v10;
 
 %   land masks ::
-compile_masks; 
+compile_masks;  
 
 %%  make land mask
-make_masks; % <- I am here.
+make_masks;  % <- I am here. Need to make sure everything below is unchanged.
 
 %%  interpolate data
 interp_variables;

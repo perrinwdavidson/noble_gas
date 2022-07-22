@@ -71,21 +71,6 @@ end
 group_names = ncread(filename, 'group_names');
 variable_names = ncread(filename, 'variable_names');
 
-%   append uvic ::
-group_names = [group_names; {append('UVic ', upper(age), ' Default')}];
-if strcmp(variable, 'sic')
-
-    variable_names = [variable_names; {append('UVic Default ', upper(age), ' SIC')}];
-
-elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
-
-    variable_names = [variable_names; {append('UVic Default ', upper(age), ' Windspeed')}];
-
-end
-
-%   modify products to include uvic ::
-products = [products; {'UVic', 'Default'}];
-
 %   get number of models ::
 NUMMOD = size(group_names, 1);
 
@@ -181,7 +166,7 @@ for iMod = 1 : 1 : NUMMOD
 
         %   quality control ::
         %-  make sure that we are only using [0 1] scale ::
-        if sum(data_vec > 1) > 0 && strcmp('sic', variable)
+        if sum(data_vec > 1, 'all') > 0 && strcmp('sic', variable)
 
             %   correct ::
             data_vec = data_vec ./ 100;  % assume that it is out of 100
@@ -197,7 +182,7 @@ for iMod = 1 : 1 : NUMMOD
         end
 
         %-  make sure that we are only using [0, 360] for longitude ::
-        if sum(model_lon_vec < 0) > 0
+        if sum(model_lon_vec < 0, 'all') > 0
 
             %   correct ::
             model_lon_vec(model_lon_vec < 0) = model_lon_vec(model_lon_vec < 0) + 360;

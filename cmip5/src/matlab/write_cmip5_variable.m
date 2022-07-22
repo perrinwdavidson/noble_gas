@@ -7,7 +7,15 @@ function write_cmip5_variable(cmip_data, variable, products, age, filename)
 %--------------------------------------------------------------------------
 %%  configure
 %   let me know what is going on
-disp(append('Writing raw CMIP5 model data for ', upper(variable), ' to a netCDF file.'));
+if strcmp(variable, 'sftlf')
+
+    disp(append('Writing CMIP5 and UVic model land masks for ', upper(age), ' to a netCDF file.'));
+
+else
+
+    disp(append('Writing raw CMIP5 model data for ', upper(variable), ' to a netCDF file.'));
+
+end
 
 %   get all models ::
 NUMMOD = length(cmip_data); 
@@ -68,7 +76,7 @@ for iMod = 1 : 1 : NUMMOD
     netcdf.endDef(nc_id);
 
     %   write ::
-    netcdf.putVar(mod_group_id, mod_data_id, mod_data);
+    netcdf.putVar(mod_group_id, mod_data_id, double(mod_data));
     netcdf.putVar(mod_group_id, mod_lon_id, mod_lon);
     netcdf.putVar(mod_group_id, mod_lat_id, mod_lat);
 
