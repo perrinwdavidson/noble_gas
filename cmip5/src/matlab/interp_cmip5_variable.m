@@ -50,17 +50,18 @@ if strcmp(variable, 'sic')
     land_mask = logical(ideep(:));
     clear('ideep');
 
-%   core grid ::
+%   core grid  (we do not mask core) ::
 elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
 
     %   uvic ::
-    load(fullfile('data', 'exp_raw', 'uvic', 'grid'), 'x', 'y');
+    load(fullfile('data', 'exp_raw', 'uvic', 'grid'), 'x', 'y', 'ideep');
     load(fullfile('data', 'exp_raw', 'uvic', age, 'wind_speed'), 'windspeed');
     [uvic_lat, uvic_lon] = meshgrid(y, x);  
 
     %   core grid ::
     x = ncread(fullfile('data', 'exp_raw', 'core2', 'u_10.15JUNE2009.nc'), 'LON');
     y = ncread(fullfile('data', 'exp_raw', 'core2', 'u_10.15JUNE2009.nc'), 'LAT');
+    [core_lat, core_lon] = meshgrid(y, x);  
     nx = length(x); 
     ny = length(y);
 
@@ -70,6 +71,21 @@ end
 %   get variables names ::
 group_names = ncread(filename, 'group_names');
 variable_names = ncread(filename, 'variable_names');
+
+%   get land mask filename ::
+if strcmp(age, 'lgm')
+
+    mask_filename = 'land_mask_lgm.nc';
+
+elseif strcmp(age, 'pic')
+
+    mask_filename = 'land_mask_pic.nc';
+
+end
+
+%   get land mask variables names ::
+group_names_mask = ncread(mask_filename, 'group_names');
+variable_names_mask = ncread(mask_filename, 'variable_names');
 
 %   get number of models ::
 NUMMOD = size(group_names, 1);
@@ -107,8 +123,10 @@ for iMod = 1 : 1 : NUMMOD
         model_data = ncread(filename, append(group_names{iMod}, variable_names{iMod}));
         model_lon = ncread(filename, append(group_names{iMod}, 'lon'));
         model_lat = ncread(filename, append(group_names{iMod}, 'lat'));
+        model_mask = ncread(mask_filename, append(group_names_mask{iMod}, variable_names_mask{iMod}));
 
         %   vectorize coordinates ::
+        data_vec_mask = model_mask(:); 
         model_lon_vec = double(model_lon(:)); 
         model_lat_vec = double(model_lat(:)); 
 
@@ -188,6 +206,9 @@ for iMod = 1 : 1 : NUMMOD
             model_lon_vec(model_lon_vec < 0) = model_lon_vec(model_lon_vec < 0) + 360;
 
         end
+
+        %   mask data ::
+        data_vec(~data_vec_mask) = NaN;
 
         %   make data array ::
         data = rmmissing([model_lon_vec, model_lat_vec, data_vec]);

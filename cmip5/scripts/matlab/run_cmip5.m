@@ -45,7 +45,7 @@ compile_masks;
 make_masks; 
 
 %%  interpolate data
-interp_variables;
+interp_variables;  % <- I am here, re-doing zonal mean calculations (mean then interp)
 
 %%  plot data
 plot_variables; 

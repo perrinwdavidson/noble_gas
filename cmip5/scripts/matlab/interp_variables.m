@@ -28,13 +28,13 @@ for iFile = filenames
     filename = iFile{:};
 
     %   interpolate the file ::
-    [interp_lon, interp_lat, cmip_data_interp, variable, age] = interp_cmip5_variable(filename, products, interp_type, extrap_type);
+    [interp_lon, interp_lat, cmip_data_interp, variable, age] = interp_cmip5_variable(filename, products, interp_type, extrap_type); 
 
     %   calculate zonal wind ::
     if strcmp(variable, 'u10') || strcmp(variable, 'v10')
 
         %   calculate ::
-        zonal_mean = calc_zonal_mean(interp_lat, cmip_data_interp); 
+        zonal_mean = calc_zonal_mean(interp_lat, cmip_data_interp);  % <- I am here, adding in mean calc (with nans over land mask) then interpolation
 
     end
 
