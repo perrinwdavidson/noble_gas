@@ -1,4 +1,4 @@
-function write_interp_zonal_mean_windspeed(mod_lon, mod_lat, cmip_data, variable, products, age, filename)
+function write_interp_zonal_mean_windspeed(mod_lat, cmip_data, variable, products, age, filename)
 %--------------------------------------------------------------------------
 %   purpose: saving interpolated uvic and cmip windspeed data to a netcdf file.
 %   author: perrin w. davidson
@@ -29,8 +29,7 @@ variable_names = cell(NUMMOD, 1);
 for iMod = 1 : 1 : NUMMOD
 
     %   get data ::
-    mod_data = cmip_data{iMod}.value; 
-    mod_lat = cmip_data{iMod}.lat; 
+    mod_data = cmip_data{iMod}; 
 
     %   make group and variable names ::
     group_name = append(products{iMod, 1}, ' ', products{iMod, 2}); 

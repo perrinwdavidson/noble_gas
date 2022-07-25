@@ -1,4 +1,4 @@
-function [lon, lat, cmip_data_interp, variable_old, age, products] = interp_cmip5_variable(filename, products, interp_type, extrap_type)
+function [lon, lat, cmip_data_interp, variable_old, age] = interp_cmip5_variable(filename, interp_type, extrap_type)
 %--------------------------------------------------------------------------
 %   purpose: interpolating cmip5 data to uvic or core-2 grids
 %   author: perrin w. davidson
@@ -65,7 +65,18 @@ elseif strcmp(variable, 'ua') || strcmp(variable, 'va')
     nx = length(x); 
     ny = length(y);
 
+    %   make bathymetry file for core ::
+    bath_core = interp2(uvic_lat, uvic_lon, ideep, core_lat, core_lon, 'linear'); 
+    land_mask_core = bath_core; 
+
+    %   make land mask ::
+    land_mask_core(land_mask_core ~= 0) = 1; 
+    ind_lm_core = find(land_mask_core(:) == 1);
+    land_mask_core = logical(land_mask_core(:));
+    
 end
+
+%% --------- i am here, implementing core wind land mask ---------- %%
 
 %%  get inputs for this model
 %   get variables names ::
@@ -86,6 +97,10 @@ end
 %   get land mask variables names ::
 group_names_mask = ncread(mask_filename, 'group_names');
 variable_names_mask = ncread(mask_filename, 'variable_names');
+
+%   append uvic ::
+group_names = [group_names; {append('UVic ', upper(age), ' Default')}];
+variable_names = [variable_names; {append('UVic Default ', upper(age), ' ' , upper(variable))}];
 
 %   get number of models ::
 NUMMOD = size(group_names, 1);

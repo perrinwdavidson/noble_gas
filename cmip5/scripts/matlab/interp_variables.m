@@ -16,8 +16,13 @@ filenames = {'cmip5_sic_lgm_raw_data_monthly.nc', ...
              'cmip5_v10_pic_raw_data_monthly.nc'}; 
 
 %   set interpolation and extrapolation types ::
+%-  general interpolation ::
 interp_type = 'linear';  % linear, nearest, natural
 extrap_type = 'nearest';  % linear, nearest
+
+%-  zonal mean ::
+interp_type_zonal_mean = 'makima';  % interpolation routine 
+extrap_type_zonal_mean = 'extrap';  % specify whether or not we extrapolate
 
 %%  interpolate and save
 %   loop through all files ::
@@ -28,13 +33,13 @@ for iFile = filenames
     filename = iFile{:};
 
     %   interpolate the file ::
-    [interp_lon, interp_lat, cmip_data_interp, variable, age] = interp_cmip5_variable(filename, products, interp_type, extrap_type); 
+    [interp_lon, interp_lat, cmip_data_interp, variable, age] = interp_cmip5_variable(filename, interp_type, extrap_type); 
 
     %   calculate zonal wind ::
     if strcmp(variable, 'u10') || strcmp(variable, 'v10')
 
         %   calculate ::
-        zonal_mean = calc_zonal_mean(interp_lat, cmip_data_interp);  % <- I am here, adding in mean calc (with nans over land mask) then interpolation
+        [interp_lat_zonal_mean, zonal_mean] = calc_zonal_mean(filename, interp_type_zonal_mean, extrap_type_zonal_mean);  % <- I am here, adding in mean calc (with nans over land mask) then interpolation
 
     end
 
@@ -46,7 +51,7 @@ for iFile = filenames
     if strcmp(variable, 'u10') || strcmp(variable, 'v10')
 
         %   write ::
-        write_interp_zonal_mean_windspeed(interp_lon, interp_lat, zonal_mean, variable, products, age, fullfile(exp_pro_path, age, strcat(variable, '_', age, '_zonal_mean_interp_monthly.nc')));
+        write_interp_zonal_mean_windspeed(interp_lat_zonal_mean, zonal_mean, variable, products, age, fullfile(exp_pro_path, age, strcat(variable, '_', age, '_zonal_mean_interp_monthly.nc')));
 
     end
     
