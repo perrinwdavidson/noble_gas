@@ -1,7 +1,7 @@
 %%=========================================================================
-%   run_cmip5_comp
+%   run_cmip5
 %%-------------------------------------------------------------------------
-%   purpose: to compile, interpolate, and plot cmip5 windspeed (u10, v10) and sea ice fraction (sic).
+%   purpose: to compile cmip5 windspeed (u10, v10) and sea ice fraction (sic).
 %   author: perrin w. davidson
 %   contact: perrinwdavidson@gmail.com
 %   date: 01.07.22
@@ -44,11 +44,8 @@ compile_masks;
 %%  make land mask
 make_masks; 
 
-%%  interpolate data
-interp_variables;  % <- I am here, re-doing zonal mean calculations (mean then interp)
-
-%%  plot data
-plot_variables; 
+%%  make wind factor;
+make_wind_factor;  % <- I am here.
 
 %%  end program
 %%=========================================================================
